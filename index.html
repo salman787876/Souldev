@@ -2,27 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Souldev - Color & QR Tools</title>
+  <title>Souldev - Advanced Tools</title>
   <style>
-    body { font-family: Arial; background:#111; color:#fff; text-align:center; padding:20px; }
-    h1 { margin-bottom:30px; }
-    .tool { background:#222; padding:20px; margin:20px auto; border-radius:10px; width:300px; }
-    input, button { padding:10px; margin:5px 0; width:90%; border-radius:5px; border:none; }
-    button { cursor:pointer; background:#0ff; color:#000; font-weight:bold; }
-    img { margin-top:10px; border:2px solid #0ff; border-radius:10px; }
+    /* الألوان البرتقالية الدافئة */
+    :root {
+      --orange-dark: #FF6F3C;
+      --orange-light: #FFA76B;
+      --bg: #2B1B0F;
+      --text: #FFF8F0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 { margin-bottom: 40px; font-size: 2.5em; }
+    .tool {
+      background: var(--orange-dark);
+      padding: 25px;
+      margin: 20px auto;
+      border-radius: 15px;
+      width: 320px;
+      transition: 0.3s;
+    }
+    .tool:hover {
+      background: var(--orange-light);
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 8px 0;
+      width: 90%;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--orange-light);
+      color: #2B1B0F;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    button:hover { background: #FF9540; }
+
+    #colorPreview {
+      margin-top: 15px;
+      width: 100%;
+      height: 50px;
+      border-radius: 8px;
+      border: 2px solid #FFF8F0;
+    }
+
+    img { margin-top: 15px; border-radius: 10px; border: 2px solid var(--text); }
   </style>
 </head>
 <body>
 
-<h1>Souldev Tools</h1>
+<h1>Souldev - Advanced Tools</h1>
 
+<!-- أداة اختيار الألوان -->
 <div class="tool">
   <h2>Color Picker & Converter</h2>
   <input type="color" id="colorPicker">
   <p>Hex: <span id="hexCode">#ffffff</span></p>
   <p>RGB: <span id="rgbCode">rgb(255,255,255)</span></p>
+  <div id="colorPreview"></div>
 </div>
 
+<!-- أداة QR Generator -->
 <div class="tool">
   <h2>QR Generator</h2>
   <input type="text" id="qrInput" placeholder="Enter text or URL">
@@ -30,22 +85,27 @@
   <div id="qrResult"></div>
 </div>
 
+<!-- مكتبة QR -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script>
   // Color Picker
   const colorPicker = document.getElementById('colorPicker');
   const hexCode = document.getElementById('hexCode');
   const rgbCode = document.getElementById('rgbCode');
+  const colorPreview = document.getElementById('colorPreview');
 
-  colorPicker.addEventListener('input', () => {
-    const hex = colorPicker.value;
-    hexCode.textContent = hex;
-
-    const bigint = parseInt(hex.slice(1), 16);
+  function updateColor(color){
+    hexCode.textContent = color;
+    const bigint = parseInt(color.slice(1),16);
     const r = (bigint >> 16) & 255;
     const g = (bigint >> 8) & 255;
     const b = bigint & 255;
     rgbCode.textContent = `rgb(${r},${g},${b})`;
+    colorPreview.style.background = color;
+  }
+
+  colorPicker.addEventListener('input', () => {
+    updateColor(colorPicker.value);
   });
 
   // QR Generator
