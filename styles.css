@@ -1,1 +1,5 @@
-
+/* يمكنك إضافة أي أنماط إضافية هنا */
+body { margin:0; padding:0; background:#111; color:#fff; font-family: Arial, sans-serif; }
+a { color:#0ff; text-decoration:none; }
+.tool { transition:0.3s; }
+.tool:hover { transform: scale(1.05);}
