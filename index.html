@@ -2,90 +2,150 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Souldev - Advanced Tools</title>
+  <title>Souldev Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* الألوان البرتقالية الدافئة */
-    :root {
-      --orange-dark: #FF6F3C;
-      --orange-light: #FFA76B;
-      --bg: #2B1B0F;
+    :root{
+      --primary: #FF6F3C;
+      --accent: #FFA76B;
+      --bg: #1F1F1F;
+      --panel: #2B2B2B;
       --text: #FFF8F0;
     }
 
     body {
-      font-family: Arial, sans-serif;
+      margin:0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: var(--bg);
       color: var(--text);
-      margin: 0;
-      padding: 20px;
-      text-align: center;
     }
 
-    h1 { margin-bottom: 40px; font-size: 2.5em; }
+    header {
+      padding:20px;
+      background: var(--primary);
+      text-align:center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    header h1 {
+      margin:0;
+      font-size:2.2em;
+    }
+
+    main {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:20px;
+      padding:20px;
+    }
+
     .tool {
-      background: var(--orange-dark);
-      padding: 25px;
-      margin: 20px auto;
-      border-radius: 15px;
-      width: 320px;
-      transition: 0.3s;
-    }
-    .tool:hover {
-      background: var(--orange-light);
+      background: var(--panel);
+      border-radius:12px;
+      padding:20px;
+      width:320px;
+      transition: transform 0.2s, background 0.2s;
     }
 
-    input, button {
-      padding: 10px;
-      margin: 8px 0;
-      width: 90%;
-      border-radius: 8px;
-      border: none;
-      font-size: 1em;
+    .tool:hover {
+      transform: translateY(-5px);
+      background: #3a3a3a;
+    }
+
+    .tool h2 {
+      margin-top:0;
+      margin-bottom:10px;
+      color: var(--accent);
+    }
+
+    input, button, textarea {
+      width: 100%;
+      padding:10px;
+      margin:5px 0;
+      border-radius:6px;
+      border:none;
+      font-size:1em;
     }
 
     button {
-      cursor: pointer;
-      background: var(--orange-light);
-      color: #2B1B0F;
-      font-weight: bold;
+      cursor:pointer;
+      background: var(--accent);
+      color:#1F1F1F;
+      font-weight:bold;
       transition: 0.2s;
     }
 
-    button:hover { background: #FF9540; }
-
-    #colorPreview {
-      margin-top: 15px;
-      width: 100%;
-      height: 50px;
-      border-radius: 8px;
-      border: 2px solid #FFF8F0;
+    button:hover {
+      background:#FF914D;
     }
 
-    img { margin-top: 15px; border-radius: 10px; border: 2px solid var(--text); }
+    #colorPreview {
+      margin-top:10px;
+      height:40px;
+      border-radius:6px;
+      border:2px solid var(--text);
+    }
+
+    img { margin-top:10px; border-radius:8px; }
+
+    footer {
+      text-align:center;
+      padding:15px;
+      background: var(--primary);
+      margin-top:40px;
+      font-size:0.9em;
+      color:#fff;
+    }
   </style>
 </head>
 <body>
 
-<h1>Souldev - Advanced Tools</h1>
+<header>
+  <h1>Souldev Platform</h1>
+  <p>Professional tools for developers</p>
+</header>
 
-<!-- أداة اختيار الألوان -->
-<div class="tool">
-  <h2>Color Picker & Converter</h2>
-  <input type="color" id="colorPicker">
-  <p>Hex: <span id="hexCode">#ffffff</span></p>
-  <p>RGB: <span id="rgbCode">rgb(255,255,255)</span></p>
-  <div id="colorPreview"></div>
-</div>
+<main>
+  <!-- Color Picker -->
+  <div class="tool">
+    <h2>Color Picker & Converter</h2>
+    <input type="color" id="colorPicker">
+    <p>Hex: <span id="hexCode">#ffffff</span></p>
+    <p>RGB: <span id="rgbCode">rgb(255,255,255)</span></p>
+    <div id="colorPreview"></div>
+  </div>
 
-<!-- أداة QR Generator -->
-<div class="tool">
-  <h2>QR Generator</h2>
-  <input type="text" id="qrInput" placeholder="Enter text or URL">
-  <button onclick="generateQR()">Generate QR</button>
-  <div id="qrResult"></div>
-</div>
+  <!-- QR Generator -->
+  <div class="tool">
+    <h2>QR Generator</h2>
+    <input type="text" id="qrInput" placeholder="Enter text or URL">
+    <button onclick="generateQR()">Generate QR</button>
+    <div id="qrResult"></div>
+  </div>
 
-<!-- مكتبة QR -->
+  <!-- Password Hasher -->
+  <div class="tool">
+    <h2>Password Hasher</h2>
+    <input type="text" id="passInput" placeholder="Enter password">
+    <button onclick="hashPassword()">Hash Password (SHA-256)</button>
+    <p>Hashed: <span id="hashedPass"></span></p>
+  </div>
+
+  <!-- Base64 Encoder/Decoder -->
+  <div class="tool">
+    <h2>Base64 Encode/Decode</h2>
+    <textarea id="baseInput" placeholder="Enter text"></textarea>
+    <button onclick="encodeBase64()">Encode</button>
+    <button onclick="decodeBase64()">Decode</button>
+    <p>Result: <span id="baseResult"></span></p>
+  </div>
+</main>
+
+<footer>
+  &copy; 2026 Souldev - All tools free for developers
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script>
   // Color Picker
@@ -94,18 +154,16 @@
   const rgbCode = document.getElementById('rgbCode');
   const colorPreview = document.getElementById('colorPreview');
 
-  function updateColor(color){
+  colorPicker.addEventListener('input', ()=>{
+    const color = colorPicker.value;
     hexCode.textContent = color;
+
     const bigint = parseInt(color.slice(1),16);
     const r = (bigint >> 16) & 255;
     const g = (bigint >> 8) & 255;
     const b = bigint & 255;
     rgbCode.textContent = `rgb(${r},${g},${b})`;
     colorPreview.style.background = color;
-  }
-
-  colorPicker.addEventListener('input', () => {
-    updateColor(colorPicker.value);
   });
 
   // QR Generator
@@ -114,12 +172,37 @@
     const qrDiv = document.getElementById('qrResult');
     qrDiv.innerHTML = '';
     if(text){
-      QRCode.toDataURL(text, { width:200 }, function(err, url){
+      QRCode.toDataURL(text, {width:200}, function(err,url){
         if(err){ alert("Error generating QR"); return; }
         const img = document.createElement('img');
         img.src = url;
         qrDiv.appendChild(img);
       });
+    }
+  }
+
+  // Password Hasher (SHA-256)
+  async function hashPassword(){
+    const input = document.getElementById('passInput').value;
+    const enc = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', enc.encode(input));
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+    document.getElementById('hashedPass').textContent = hashHex;
+  }
+
+  // Base64 Encode/Decode
+  function encodeBase64(){
+    const text = document.getElementById('baseInput').value;
+    document.getElementById('baseResult').textContent = btoa(text);
+  }
+
+  function decodeBase64(){
+    const text = document.getElementById('baseInput').value;
+    try{
+      document.getElementById('baseResult').textContent = atob(text);
+    }catch(e){
+      document.getElementById('baseResult').textContent = 'Invalid Base64';
     }
   }
 </script>
