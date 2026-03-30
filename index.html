@@ -2,61 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Souldev - Tech Tools</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Souldev - Color & QR Tools</title>
   <style>
-    body { background: #111; color: #fff; font-family: Arial, sans-serif; text-align:center; margin:0; padding:0;}
-    header { padding:20px; background:#222; }
-    a { color:#0ff; text-decoration:none; }
-    .tools { display:flex; justify-content:center; gap:20px; margin-top:40px; flex-wrap:wrap;}
-    .tool { background:#222; padding:20px; border-radius:8px; width:200px; transition:0.3s;}
-    .tool:hover { background:#333; }
-    input { padding:5px; width:80%; margin-bottom:10px; }
-    button { padding:5px 10px; cursor:pointer; background:#0ff; border:none; border-radius:5px; color:#000;}
+    body { font-family: Arial; background:#111; color:#fff; text-align:center; padding:20px; }
+    h1 { margin-bottom:30px; }
+    .tool { background:#222; padding:20px; margin:20px auto; border-radius:10px; width:300px; }
+    input, button { padding:10px; margin:5px 0; width:90%; border-radius:5px; border:none; }
+    button { cursor:pointer; background:#0ff; color:#000; font-weight:bold; }
+    img { margin-top:10px; border:2px solid #0ff; border-radius:10px; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Souldev</h1>
-    <p>All-in-one tech tools platform</p>
-  </header>
 
-  <div class="tools">
-    <div class="tool">
-      <h2>Color Converter</h2>
-      <p>Hex &lt;-&gt; RGB</p>
-      <input type="text" id="colorInput" placeholder="#ff0000">
-      <button onclick="convertColor()">Convert</button>
-      <p id="colorResult"></p>
-    </div>
+<h1>Souldev Tools</h1>
 
-    <div class="tool">
-      <h2>QR Generator</h2>
-      <p>Generate QR codes</p>
-      <input type="text" id="qrInput" placeholder="Enter text">
-      <button onclick="generateQR()">Generate</button>
-      <div id="qrResult" style="margin-top:10px;"></div>
-    </div>
-  </div>
+<div class="tool">
+  <h2>Color Picker & Converter</h2>
+  <input type="color" id="colorPicker">
+  <p>Hex: <span id="hexCode">#ffffff</span></p>
+  <p>RGB: <span id="rgbCode">rgb(255,255,255)</span></p>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <script>
-    function convertColor(){
-      const hex = document.getElementById('colorInput').value.replace("#","");
-      const bigint = parseInt(hex,16);
-      const r = (bigint >> 16) & 255;
-      const g = (bigint >> 8) & 255;
-      const b = bigint & 255;
-      document.getElementById('colorResult').innerText = `RGB(${r}, ${g}, ${b})`;
-    }
+<div class="tool">
+  <h2>QR Generator</h2>
+  <input type="text" id="qrInput" placeholder="Enter text or URL">
+  <button onclick="generateQR()">Generate QR</button>
+  <div id="qrResult"></div>
+</div>
 
-    function generateQR(){
-      const text = document.getElementById('qrInput').value;
-      QRCode.toDataURL(text, { width:150 }, function (err, url){
-        if(err) console.error(err);
-        document.getElementById('qrResult').innerHTML = `<img src="${url}">`;
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+  // Color Picker
+  const colorPicker = document.getElementById('colorPicker');
+  const hexCode = document.getElementById('hexCode');
+  const rgbCode = document.getElementById('rgbCode');
+
+  colorPicker.addEventListener('input', () => {
+    const hex = colorPicker.value;
+    hexCode.textContent = hex;
+
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    rgbCode.textContent = `rgb(${r},${g},${b})`;
+  });
+
+  // QR Generator
+  function generateQR(){
+    const text = document.getElementById('qrInput').value;
+    const qrDiv = document.getElementById('qrResult');
+    qrDiv.innerHTML = '';
+    if(text){
+      QRCode.toDataURL(text, { width:200 }, function(err, url){
+        if(err){ alert("Error generating QR"); return; }
+        const img = document.createElement('img');
+        img.src = url;
+        qrDiv.appendChild(img);
       });
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
