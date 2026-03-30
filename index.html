@@ -4,208 +4,50 @@
   <meta charset="UTF-8">
   <title>Souldev Platform</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    :root{
-      --primary: #FF6F3C;
-      --accent: #FFA76B;
-      --bg: #1F1F1F;
-      --panel: #2B2B2B;
-      --text: #FFF8F0;
-    }
-
-    body {
-      margin:0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    header {
-      padding:20px;
-      background: var(--primary);
-      text-align:center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    }
-
-    header h1 {
-      margin:0;
-      font-size:2.2em;
-    }
-
-    main {
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:20px;
-      padding:20px;
-    }
-
-    .tool {
-      background: var(--panel);
-      border-radius:12px;
-      padding:20px;
-      width:320px;
-      transition: transform 0.2s, background 0.2s;
-    }
-
-    .tool:hover {
-      transform: translateY(-5px);
-      background: #3a3a3a;
-    }
-
-    .tool h2 {
-      margin-top:0;
-      margin-bottom:10px;
-      color: var(--accent);
-    }
-
-    input, button, textarea {
-      width: 100%;
-      padding:10px;
-      margin:5px 0;
-      border-radius:6px;
-      border:none;
-      font-size:1em;
-    }
-
-    button {
-      cursor:pointer;
-      background: var(--accent);
-      color:#1F1F1F;
-      font-weight:bold;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background:#FF914D;
-    }
-
-    #colorPreview {
-      margin-top:10px;
-      height:40px;
-      border-radius:6px;
-      border:2px solid var(--text);
-    }
-
-    img { margin-top:10px; border-radius:8px; }
-
-    footer {
-      text-align:center;
-      padding:15px;
-      background: var(--primary);
-      margin-top:40px;
-      font-size:0.9em;
-      color:#fff;
-    }
-  </style>
+  <link rel="stylesheet" href="styles/style.css">
+  <script src="tools/color.js" defer></script>
+  <script src="tools/qr.js" defer></script>
+  <script src="tools/password.js" defer></script>
+  <script src="tools/base64.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
+  <!-- Header -->
+  <div id="header"></div>
 
-<header>
-  <h1>Souldev Platform</h1>
-  <p>Professional tools for developers</p>
-</header>
+  <main>
+    <div class="tool" id="colorTool">
+      <h2>🎨 Color Picker & Converter</h2>
+      <input type="color" id="colorPicker">
+      <p>Hex: <span id="hexCode">#ffffff</span></p>
+      <p>RGB: <span id="rgbCode">rgb(255,255,255)</span></p>
+      <div id="colorPreview"></div>
+    </div>
 
-<main>
-  <!-- Color Picker -->
-  <div class="tool">
-    <h2>Color Picker & Converter</h2>
-    <input type="color" id="colorPicker">
-    <p>Hex: <span id="hexCode">#ffffff</span></p>
-    <p>RGB: <span id="rgbCode">rgb(255,255,255)</span></p>
-    <div id="colorPreview"></div>
-  </div>
+    <div class="tool" id="qrTool">
+      <h2>📱 QR Generator</h2>
+      <input type="text" id="qrInput" placeholder="Enter text or URL">
+      <button id="generateQRBtn">Generate QR</button>
+      <div id="qrResult"></div>
+    </div>
 
-  <!-- QR Generator -->
-  <div class="tool">
-    <h2>QR Generator</h2>
-    <input type="text" id="qrInput" placeholder="Enter text or URL">
-    <button onclick="generateQR()">Generate QR</button>
-    <div id="qrResult"></div>
-  </div>
+    <div class="tool" id="passwordTool">
+      <h2>🔐 Password Hasher</h2>
+      <input type="text" id="passInput" placeholder="Enter password">
+      <button id="hashPassBtn">Hash Password (SHA-256)</button>
+      <p>Hashed: <span id="hashedPass"></span></p>
+    </div>
 
-  <!-- Password Hasher -->
-  <div class="tool">
-    <h2>Password Hasher</h2>
-    <input type="text" id="passInput" placeholder="Enter password">
-    <button onclick="hashPassword()">Hash Password (SHA-256)</button>
-    <p>Hashed: <span id="hashedPass"></span></p>
-  </div>
+    <div class="tool" id="base64Tool">
+      <h2>📝 Base64 Encode/Decode</h2>
+      <textarea id="baseInput" placeholder="Enter text"></textarea>
+      <button id="encodeBtn">Encode</button>
+      <button id="decodeBtn">Decode</button>
+      <p>Result: <span id="baseResult"></span></p>
+    </div>
+  </main>
 
-  <!-- Base64 Encoder/Decoder -->
-  <div class="tool">
-    <h2>Base64 Encode/Decode</h2>
-    <textarea id="baseInput" placeholder="Enter text"></textarea>
-    <button onclick="encodeBase64()">Encode</button>
-    <button onclick="decodeBase64()">Decode</button>
-    <p>Result: <span id="baseResult"></span></p>
-  </div>
-</main>
-
-<footer>
-  &copy; 2026 Souldev - All tools free for developers
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script>
-  // Color Picker
-  const colorPicker = document.getElementById('colorPicker');
-  const hexCode = document.getElementById('hexCode');
-  const rgbCode = document.getElementById('rgbCode');
-  const colorPreview = document.getElementById('colorPreview');
-
-  colorPicker.addEventListener('input', ()=>{
-    const color = colorPicker.value;
-    hexCode.textContent = color;
-
-    const bigint = parseInt(color.slice(1),16);
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
-    rgbCode.textContent = `rgb(${r},${g},${b})`;
-    colorPreview.style.background = color;
-  });
-
-  // QR Generator
-  function generateQR(){
-    const text = document.getElementById('qrInput').value;
-    const qrDiv = document.getElementById('qrResult');
-    qrDiv.innerHTML = '';
-    if(text){
-      QRCode.toDataURL(text, {width:200}, function(err,url){
-        if(err){ alert("Error generating QR"); return; }
-        const img = document.createElement('img');
-        img.src = url;
-        qrDiv.appendChild(img);
-      });
-    }
-  }
-
-  // Password Hasher (SHA-256)
-  async function hashPassword(){
-    const input = document.getElementById('passInput').value;
-    const enc = new TextEncoder();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', enc.encode(input));
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
-    document.getElementById('hashedPass').textContent = hashHex;
-  }
-
-  // Base64 Encode/Decode
-  function encodeBase64(){
-    const text = document.getElementById('baseInput').value;
-    document.getElementById('baseResult').textContent = btoa(text);
-  }
-
-  function decodeBase64(){
-    const text = document.getElementById('baseInput').value;
-    try{
-      document.getElementById('baseResult').textContent = atob(text);
-    }catch(e){
-      document.getElementById('baseResult').textContent = 'Invalid Base64';
-    }
-  }
-</script>
-
+  <!-- Footer -->
+  <div id="footer"></div>
 </body>
 </html>
