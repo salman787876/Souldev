@@ -2,28 +2,93 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Soul Tools</title>
-<link rel="stylesheet" href="style.css">
+<title>Soul AI 🔥</title>
+
+<style>
+body {
+  background: #0f0f0f;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+  padding: 50px;
+}
+
+h1 {
+  color: orange;
+}
+
+.box {
+  background: #1c1c1c;
+  padding: 25px;
+  border-radius: 15px;
+  width: 350px;
+  margin: auto;
+}
+
+input, textarea {
+  width: 90%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: orange;
+  border: none;
+  cursor: pointer;
+}
+
+#response {
+  margin-top: 20px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-  <h1>Soul Tools ⚡</h1>
+<h1>Soul AI ⚡</h1>
 
-  <div class="card">
-    <h2>Clone Server</h2>
-    <input id="guildId" placeholder="Server ID">
-    <button onclick="clone()">Clone Now</button>
-  </div>
+<div class="box">
 
-  <div class="card">
-    <h2>Link Checker</h2>
-    <input id="link" placeholder="https://example.com">
-    <button onclick="check()">Check</button>
-    <p id="result"></p>
-  </div>
+  <input id="apikey" placeholder="Paste your OpenAI API Key">
+
+  <textarea id="question" placeholder="Ask anything..."></textarea>
+
+  <button onclick="askAI()">Ask</button>
+
+  <p id="response"></p>
+
 </div>
 
-<script src="script.js"></script>
+<script>
+async function askAI() {
+  const key = document.getElementById("apikey").value;
+  const q = document.getElementById("question").value;
+
+  if (!key) {
+    alert("حط API Key أول");
+    return;
+  }
+
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + key,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: q }]
+    })
+  });
+
+  const data = await res.json();
+
+  document.getElementById("response").innerText =
+    data.choices?.[0]?.message?.content || "Error";
+}
+</script>
+
 </body>
 </html>
