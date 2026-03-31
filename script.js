@@ -1,44 +1,37 @@
-const sendBtn = document.getElementById('send-btn');
-const userInput = document.getElementById('user-input');
-const chatBox = document.getElementById('chat-box');
-const clickSound = document.getElementById('clickSound');
+const sendBtn=document.getElementById('send-btn');
+const userInput=document.getElementById('user-input');
+const chatWindow=document.getElementById('chat-window');
+const clickSound=document.getElementById('clickSound');
 
-// تشغيل صوت عند الضغط
-function playClick() {
-  clickSound.currentTime = 0;
-  clickSound.play();
+function playClick(){clickSound.currentTime=0;clickSound.play();}
+
+function addMessage(content,type){
+  const msg=document.createElement('div');
+  msg.classList.add('message',type==='user'?'user-msg':'ai-msg');
+  msg.textContent=content;
+  chatWindow.appendChild(msg);
+  chatWindow.scrollTop=chatWindow.scrollHeight;
 }
 
-// إضافة رسالة للمحادثة
-function addMessage(content, type) {
-  const msg = document.createElement('div');
-  msg.classList.add('message', type === 'user' ? 'user-msg' : 'ai-msg');
-  msg.textContent = content;
-  chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+// محاكاة ردود AI مثل ChatGPT
+function getAIResponse(text){
+  const responses=[
+    `🤖 فهمت كلامك "${text}"!`,
+    `💡 AI يجيب لك فكرة عن: "${text}"`,
+    `📘 هذا رد تجريبي على: "${text}"`,
+    `✨ رد احترافي على: "${text}"`,
+    `🤔 تحليل لرسالتك "${text}" تم!`
+  ];
+  return responses[Math.floor(Math.random()*responses.length)];
 }
 
-// محاكاة رد AI (تقدر تربطه لاحقًا بـ API)
-function getAIResponse(userText) {
-  // مثال ذكي: ممكن تغيره لـ أي AI API
-  return "🤖 AI: فهمت كلامك \"" + userText + "\". هذا رد تجريبي.";
-}
-
-sendBtn.addEventListener('click', () => {
+sendBtn.addEventListener('click',()=>{
   playClick();
-  const text = userInput.value.trim();
-  if (!text) return;
-  addMessage(text, 'user');
-  userInput.value = '';
-
-  // تأخير بسيط لرد AI
-  setTimeout(() => {
-    const aiReply = getAIResponse(text);
-    addMessage(aiReply, 'ai');
-  }, 500);
+  const text=userInput.value.trim();
+  if(!text)return;
+  addMessage(text,'user');
+  userInput.value='';
+  setTimeout(()=>{addMessage(getAIResponse(text),'ai');},400);
 });
 
-// دعم الضغط على Enter
-userInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendBtn.click();
-});
+userInput.addEventListener('keypress',(e)=>{if(e.key==='Enter')sendBtn.click();});
