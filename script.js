@@ -3,6 +3,9 @@ const userInput = document.getElementById('user-input');
 const chatWindow = document.getElementById('chat-window');
 const clickSound = document.getElementById('clickSound');
 
+// ضع هنا مفتاح OpenAI API الخاص بك
+const OPENAI_API_KEY = "YOUR_API_KEY_HERE";
+
 function playClick() {
   clickSound.currentTime = 0;
   clickSound.play();
@@ -16,27 +19,36 @@ function addMessage(content, type) {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-// ردود AI تجريبية
-function getAIResponse(text) {
-  const responses = [
-    `🤖 فهمت كلامك "${text}"!`,
-    `💡 AI يقترح: "${text}"`,
-    `✨ هذا رد تجريبي على: "${text}"`,
-    `📘 تحليل لرسالتك: "${text}"`,
-    `🤔 AI يجيب على: "${text}"`
-  ];
-  return responses[Math.floor(Math.random() * responses.length)];
+// إرسال الرسالة لـ OpenAI API
+async function getAIResponse(message) {
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{role:"user", content: message}],
+        temperature: 0.7
+      })
+    });
+    const data = await response.json();
+    return data.choices[0].message.content;
+  } catch (error) {
+    return "حدث خطأ في الرد. حاول مرة أخرى.";
+  }
 }
 
-function sendMessage() {
+async function sendMessage() {
   const text = userInput.value.trim();
   if (!text) return;
   playClick();
   addMessage(text, 'user');
   userInput.value = '';
-  setTimeout(() => {
-    addMessage(getAIResponse(text), 'ai');
-  }, 400);
+  const aiReply = await getAIResponse(text);
+  addMessage(aiReply, 'ai');
 }
 
 sendBtn.addEventListener('click', sendMessage);
