@@ -3,27 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Discord Hub</title>
+<title>AI Chat Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
+
+<div class="chat-container">
   <header>
-    <h1>🤖 AI Discord Hub</h1>
-    <p>🔐 تسجيل دخول Discord • 🤖 AI يفهم كودك ويعدله • 🌐 أدوات ديسكورد • 🧠 مودات متنوعة • 🎨 واجهة احترافية</p>
+    <h1>🤖 AI Chat Hub</h1>
+    <p>تحدث مع الذكاء الاصطناعي مباشرة • بدون تسجيل أو مواقع ثانية</p>
   </header>
 
-  <div class="buttons">
-    <button onclick="playClick(); alert('Login Discord Coming Soon!')">🔐 تسجيل دخول Discord</button>
-    <button onclick="playClick(); alert('AI Code Modifier Coming Soon!')">🤖 AI يفهم كودك ويعدله</button>
-    <button onclick="playClick(); alert('Discord Tools Coming Soon!')">🌐 أدوات ديسكورد</button>
-    <button onclick="playClick(); alert('Modes Coming Soon!')">🧠 مودات (هاكر/مبرمج/دعم فني)</button>
+  <div id="chat-box">
+    <!-- المحادثة تظهر هنا -->
   </div>
 
-  <footer>
-    <p>🎨 واجهة مصممة لدرجة تنافس شركات عالمية</p>
-  </footer>
+  <div class="input-area">
+    <input type="text" id="user-input" placeholder="اكتب رسالتك هنا...">
+    <button id="send-btn">ارسال</button>
+  </div>
 </div>
 
 <audio id="clickSound" src="click.mp3"></audio>
