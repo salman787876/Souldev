@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Soul AI Chat 🔥</title>
+<title>Soul AI 👑</title>
 
 <style>
 body {
@@ -13,9 +13,10 @@ body {
   display: flex;
 }
 
+/* Sidebar */
 .sidebar {
-  width: 250px;
-  background: #1a1a1a;
+  width: 260px;
+  background: rgba(20,20,20,0.95);
   padding: 15px;
   height: 100vh;
   overflow-y: auto;
@@ -27,9 +28,17 @@ body {
   margin-bottom: 10px;
   background: orange;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
 }
 
+.sidebar input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+/* Chat */
 .chat {
   flex: 1;
   display: flex;
@@ -42,29 +51,38 @@ body {
   overflow-y: auto;
 }
 
+/* Messages */
 .msg {
+  max-width: 70%;
+  padding: 12px;
   margin: 10px 0;
-  padding: 10px;
-  border-radius: 10px;
+  border-radius: 12px;
+  animation: fade 0.3s ease;
 }
 
 .user {
   background: orange;
   color: black;
-  align-self: flex-end;
+  margin-left: auto;
 }
 
 .bot {
   background: #2a2a2a;
 }
 
+@keyframes fade {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1;}
+}
+
+/* Input */
 .input {
   display: flex;
   padding: 10px;
   background: #1a1a1a;
 }
 
-input {
+.input input {
   flex: 1;
   padding: 10px;
   border: none;
@@ -76,6 +94,22 @@ input {
   border: none;
   cursor: pointer;
 }
+
+/* Code block */
+pre {
+  background: black;
+  padding: 10px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+/* Copy button */
+.copy {
+  background: orange;
+  border: none;
+  margin-top: 5px;
+  cursor: pointer;
+}
 </style>
 </head>
 
@@ -83,6 +117,7 @@ input {
 
 <div class="sidebar">
   <button onclick="newChat()">+ New Chat</button>
+  <button onclick="deleteChat()">Delete Chat</button>
   <input id="apikey" placeholder="API Key">
   <div id="history"></div>
 </div>
@@ -111,13 +146,21 @@ function newChat() {
   render();
 }
 
+function deleteChat() {
+  if (!currentChat) return;
+  delete chats[currentChat];
+  currentChat = null;
+  save();
+  render();
+}
+
 function render() {
   const history = document.getElementById("history");
   history.innerHTML = "";
 
   for (let id in chats) {
     const btn = document.createElement("button");
-    btn.innerText = "Chat " + id;
+    btn.innerText = "Chat";
     btn.onclick = () => {
       currentChat = id;
       renderMessages();
@@ -137,9 +180,22 @@ function renderMessages() {
   chats[currentChat].forEach(m => {
     const div = document.createElement("div");
     div.className = "msg " + m.role;
-    div.innerText = m.content;
+
+    if (m.content.includes("```")) {
+      const code = m.content.replace(/```/g, "");
+      div.innerHTML = "<pre>"+code+"</pre><button class='copy' onclick='copyText(this)'>Copy</button>";
+    } else {
+      div.innerText = m.content;
+    }
+
     box.appendChild(div);
   });
+}
+
+function copyText(btn) {
+  const text = btn.previousSibling.innerText;
+  navigator.clipboard.writeText(text);
+  btn.innerText = "Copied!";
 }
 
 async function send() {
@@ -170,10 +226,31 @@ async function send() {
   const data = await res.json();
   const reply = data.choices?.[0]?.message?.content || "Error";
 
-  chats[currentChat].push({ role: "bot", content: reply });
+  typeEffect(reply);
+}
 
-  save();
-  renderMessages();
+function typeEffect(text) {
+  let i = 0;
+  let current = "";
+
+  const interval = setInterval(() => {
+    current += text[i];
+    i++;
+
+    if (!chats[currentChat]) return;
+
+    if (!chats[currentChat].length || chats[currentChat][chats[currentChat].length-1].role !== "bot") {
+      chats[currentChat].push({ role: "bot", content: "" });
+    }
+
+    chats[currentChat][chats[currentChat].length-1].content = current;
+    renderMessages();
+
+    if (i >= text.length) {
+      clearInterval(interval);
+      save();
+    }
+  }, 15);
 }
 
 render();
