@@ -3,28 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Chat Pro</title>
+<title>Link Scanner Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="chat-app">
-  <header>
-    <h1>🤖 AI Chat Pro</h1>
-    <p>تحدث مع الذكاء الاصطناعي مباشرة • بدون مواقع ثانية</p>
-  </header>
 
-  <div id="chat-window">
-    <!-- المحادثة -->
+<div class="app">
+  <h1>🔍 Link Scanner Pro</h1>
+  <p>افحص الرابط وشوف إذا آمن أو مشبوه</p>
+
+  <div class="scan-box">
+    <input type="text" id="linkInput" placeholder="https://example.com">
+    <button onclick="scanLink()">فحص</button>
   </div>
 
-  <div class="input-area">
-    <input type="text" id="user-input" placeholder="اكتب رسالتك هنا..." autofocus>
-    <button id="send-btn">💬</button>
-  </div>
+  <div id="result"></div>
 </div>
 
 <audio id="clickSound" src="click.mp3"></audio>
+
 <script src="script.js"></script>
 </body>
 </html>
