@@ -2,228 +2,28 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Souldev Platform</title>
-<style>
-  :root{
-    --primary:#FF6F3C;
-    --accent:#FFA76B;
-    --bg:#1E1E1E;
-    --panel:#2B2B2B;
-    --text:#FFF8F0;
-  }
-
-  body{
-    margin:0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display:flex;
-    background:var(--bg);
-    color:var(--text);
-  }
-
-  /* Sidebar */
-  .sidebar{
-    width:220px;
-    background:var(--panel);
-    display:flex;
-    flex-direction:column;
-    padding-top:20px;
-    height:100vh;
-  }
-
-  .sidebar h2{
-    color:var(--accent);
-    text-align:center;
-    margin-bottom:20px;
-  }
-
-  .sidebar button{
-    background:none;
-    border:none;
-    color:var(--text);
-    padding:12px 20px;
-    text-align:left;
-    font-size:1em;
-    cursor:pointer;
-    transition:0.2s;
-  }
-
-  .sidebar button:hover{
-    background:var(--primary);
-    color:#1E1E1E;
-  }
-
-  /* Main panel */
-  .main{
-    flex:1;
-    padding:20px;
-  }
-
-  .tool{
-    display:none;
-    background:var(--panel);
-    padding:20px;
-    border-radius:12px;
-    margin-bottom:20px;
-  }
-
-  .tool.active{
-    display:block;
-  }
-
-  h2.tool-title{
-    color:var(--accent);
-  }
-
-  input, button, textarea{
-    width:100%;
-    padding:10px;
-    margin:5px 0;
-    border-radius:6px;
-    border:none;
-    font-size:1em;
-  }
-
-  button{
-    background:var(--accent);
-    color:#1E1E1E;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.2s;
-  }
-
-  button:hover{
-    background:#FF914D;
-  }
-
-  #colorPreview{
-    height:50px;
-    margin-top:10px;
-    border-radius:6px;
-    border:2px solid var(--text);
-  }
-
-  img{
-    margin-top:10px;
-    border-radius:8px;
-  }
-</style>
+<title>Soul Tools</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="sidebar">
-  <h2>Souldev Tools</h2>
-  <button onclick="showTool('color')">🎨 Color Picker</button>
-  <button onclick="showTool('qr')">📱 QR Generator</button>
-  <button onclick="showTool('password')">🔐 Password Hasher</button>
-  <button onclick="showTool('base64')">📝 Base64 Encode/Decode</button>
-</div>
+<div class="container">
+  <h1>Soul Tools ⚡</h1>
 
-<div class="main">
-  <!-- Color Picker -->
-  <div class="tool" id="color">
-    <h2 class="tool-title">Color Picker & Converter</h2>
-    <input type="color" id="colorPicker">
-    <p>Hex: <span id="hexCode">#ffffff</span></p>
-    <p>RGB: <span id="rgbCode">rgb(255,255,255)</span></p>
-    <div id="colorPreview"></div>
+  <div class="card">
+    <h2>Clone Server</h2>
+    <input id="guildId" placeholder="Server ID">
+    <button onclick="clone()">Clone Now</button>
   </div>
 
-  <!-- QR Generator -->
-  <div class="tool" id="qr">
-    <h2 class="tool-title">QR Generator</h2>
-    <input type="text" id="qrInput" placeholder="Enter text or URL">
-    <button id="generateQRBtn">Generate QR</button>
-    <div id="qrResult"></div>
-  </div>
-
-  <!-- Password Hasher -->
-  <div class="tool" id="password">
-    <h2 class="tool-title">Password Hasher (SHA-256)</h2>
-    <input type="text" id="passInput" placeholder="Enter password">
-    <button id="hashPassBtn">Hash Password</button>
-    <p>Hashed: <span id="hashedPass"></span></p>
-  </div>
-
-  <!-- Base64 -->
-  <div class="tool" id="base64">
-    <h2 class="tool-title">Base64 Encode/Decode</h2>
-    <textarea id="baseInput" placeholder="Enter text"></textarea>
-    <button id="encodeBtn">Encode</button>
-    <button id="decodeBtn">Decode</button>
-    <p>Result: <span id="baseResult"></span></p>
+  <div class="card">
+    <h2>Link Checker</h2>
+    <input id="link" placeholder="https://example.com">
+    <button onclick="check()">Check</button>
+    <p id="result"></p>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script>
-  // Sidebar navigation
-  function showTool(id){
-    document.querySelectorAll('.tool').forEach(t=>t.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
-
-  // Default tool
-  showTool('color');
-
-  // Color Picker
-  const colorPicker=document.getElementById('colorPicker');
-  const hexCode=document.getElementById('hexCode');
-  const rgbCode=document.getElementById('rgbCode');
-  const colorPreview=document.getElementById('colorPreview');
-
-  colorPicker.addEventListener('input', ()=>{
-    const color=colorPicker.value;
-    hexCode.textContent=color;
-    const bigint=parseInt(color.slice(1),16);
-    const r=(bigint>>16)&255;
-    const g=(bigint>>8)&255;
-    const b=bigint&255;
-    rgbCode.textContent=`rgb(${r},${g},${b})`;
-    colorPreview.style.background=color;
-  });
-
-  // QR Generator
-  const generateQRBtn=document.getElementById('generateQRBtn');
-  generateQRBtn.addEventListener('click', ()=>{
-    const text=document.getElementById('qrInput').value;
-    const qrDiv=document.getElementById('qrResult');
-    qrDiv.innerHTML='';
-    if(text){
-      QRCode.toDataURL(text,{width:200},function(err,url){
-        if(err){ alert("Error generating QR"); return;}
-        const img=document.createElement('img');
-        img.src=url;
-        qrDiv.appendChild(img);
-      });
-    }
-  });
-
-  // Password Hasher
-  const hashPassBtn=document.getElementById('hashPassBtn');
-  hashPassBtn.addEventListener('click', async ()=>{
-    const input=document.getElementById('passInput').value;
-    const enc=new TextEncoder();
-    const hashBuffer=await crypto.subtle.digest('SHA-256',enc.encode(input));
-    const hashArray=Array.from(new Uint8Array(hashBuffer));
-    const hashHex=hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
-    document.getElementById('hashedPass').textContent=hashHex;
-  });
-
-  // Base64
-  document.getElementById('encodeBtn').addEventListener('click', ()=>{
-    const text=document.getElementById('baseInput').value;
-    document.getElementById('baseResult').textContent=btoa(text);
-  });
-  document.getElementById('decodeBtn').addEventListener('click', ()=>{
-    const text=document.getElementById('baseInput').value;
-    try{
-      document.getElementById('baseResult').textContent=atob(text);
-    }catch(e){
-      document.getElementById('baseResult').textContent='Invalid Base64';
-    }
-  });
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
