@@ -2,259 +2,31 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Soul AI 👑</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0f0f0f;
-  color: white;
-  display: flex;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 260px;
-  background: rgba(20,20,20,0.95);
-  padding: 15px;
-  height: 100vh;
-  overflow-y: auto;
-}
-
-.sidebar button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: orange;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.sidebar input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-}
-
-/* Chat */
-.chat {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.messages {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-/* Messages */
-.msg {
-  max-width: 70%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 12px;
-  animation: fade 0.3s ease;
-}
-
-.user {
-  background: orange;
-  color: black;
-  margin-left: auto;
-}
-
-.bot {
-  background: #2a2a2a;
-}
-
-@keyframes fade {
-  from {opacity: 0; transform: translateY(10px);}
-  to {opacity: 1;}
-}
-
-/* Input */
-.input {
-  display: flex;
-  padding: 10px;
-  background: #1a1a1a;
-}
-
-.input input {
-  flex: 1;
-  padding: 10px;
-  border: none;
-}
-
-.send {
-  padding: 10px;
-  background: orange;
-  border: none;
-  cursor: pointer;
-}
-
-/* Code block */
-pre {
-  background: black;
-  padding: 10px;
-  border-radius: 8px;
-  overflow-x: auto;
-}
-
-/* Copy button */
-.copy {
-  background: orange;
-  border: none;
-  margin-top: 5px;
-  cursor: pointer;
-}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Discord Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+<div class="container">
+  <header>
+    <h1>🤖 AI Discord Hub</h1>
+    <p>🔐 تسجيل دخول Discord • 🤖 AI يفهم كودك ويعدله • 🌐 أدوات ديسكورد • 🧠 مودات متنوعة • 🎨 واجهة احترافية</p>
+  </header>
 
-<div class="sidebar">
-  <button onclick="newChat()">+ New Chat</button>
-  <button onclick="deleteChat()">Delete Chat</button>
-  <input id="apikey" placeholder="API Key">
-  <div id="history"></div>
-</div>
-
-<div class="chat">
-  <div id="messages" class="messages"></div>
-
-  <div class="input">
-    <input id="input" placeholder="Type message...">
-    <button class="send" onclick="send()">Send</button>
+  <div class="buttons">
+    <button onclick="playClick(); alert('Login Discord Coming Soon!')">🔐 تسجيل دخول Discord</button>
+    <button onclick="playClick(); alert('AI Code Modifier Coming Soon!')">🤖 AI يفهم كودك ويعدله</button>
+    <button onclick="playClick(); alert('Discord Tools Coming Soon!')">🌐 أدوات ديسكورد</button>
+    <button onclick="playClick(); alert('Modes Coming Soon!')">🧠 مودات (هاكر/مبرمج/دعم فني)</button>
   </div>
+
+  <footer>
+    <p>🎨 واجهة مصممة لدرجة تنافس شركات عالمية</p>
+  </footer>
 </div>
 
-<script>
-let chats = JSON.parse(localStorage.getItem("chats")) || {};
-let currentChat = null;
-
-function save() {
-  localStorage.setItem("chats", JSON.stringify(chats));
-}
-
-function newChat() {
-  const id = Date.now();
-  chats[id] = [];
-  currentChat = id;
-  render();
-}
-
-function deleteChat() {
-  if (!currentChat) return;
-  delete chats[currentChat];
-  currentChat = null;
-  save();
-  render();
-}
-
-function render() {
-  const history = document.getElementById("history");
-  history.innerHTML = "";
-
-  for (let id in chats) {
-    const btn = document.createElement("button");
-    btn.innerText = "Chat";
-    btn.onclick = () => {
-      currentChat = id;
-      renderMessages();
-    };
-    history.appendChild(btn);
-  }
-
-  renderMessages();
-}
-
-function renderMessages() {
-  const box = document.getElementById("messages");
-  box.innerHTML = "";
-
-  if (!currentChat) return;
-
-  chats[currentChat].forEach(m => {
-    const div = document.createElement("div");
-    div.className = "msg " + m.role;
-
-    if (m.content.includes("```")) {
-      const code = m.content.replace(/```/g, "");
-      div.innerHTML = "<pre>"+code+"</pre><button class='copy' onclick='copyText(this)'>Copy</button>";
-    } else {
-      div.innerText = m.content;
-    }
-
-    box.appendChild(div);
-  });
-}
-
-function copyText(btn) {
-  const text = btn.previousSibling.innerText;
-  navigator.clipboard.writeText(text);
-  btn.innerText = "Copied!";
-}
-
-async function send() {
-  const input = document.getElementById("input");
-  const key = document.getElementById("apikey").value;
-
-  if (!currentChat) newChat();
-
-  const text = input.value;
-  if (!text) return;
-
-  chats[currentChat].push({ role: "user", content: text });
-  renderMessages();
-  input.value = "";
-
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + key,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: chats[currentChat]
-    })
-  });
-
-  const data = await res.json();
-  const reply = data.choices?.[0]?.message?.content || "Error";
-
-  typeEffect(reply);
-}
-
-function typeEffect(text) {
-  let i = 0;
-  let current = "";
-
-  const interval = setInterval(() => {
-    current += text[i];
-    i++;
-
-    if (!chats[currentChat]) return;
-
-    if (!chats[currentChat].length || chats[currentChat][chats[currentChat].length-1].role !== "bot") {
-      chats[currentChat].push({ role: "bot", content: "" });
-    }
-
-    chats[currentChat][chats[currentChat].length-1].content = current;
-    renderMessages();
-
-    if (i >= text.length) {
-      clearInterval(interval);
-      save();
-    }
-  }, 15);
-}
-
-render();
-</script>
-
+<audio id="clickSound" src="click.mp3"></audio>
+<script src="script.js"></script>
 </body>
 </html>
